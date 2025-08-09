@@ -1,12 +1,17 @@
 // storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
 
+// Fallback-Import für sharp, damit lokale Node-Umgebungen ohne natives sharp den Admin weiter nutzen können
+// Railway/Prod hat die richtige Plattform; lokal kann sharp optional sein
+// @ts-ignore
 import sharp from 'sharp' // sharp-import
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
+import { Ingredients } from './collections/Ingredients'
+import { Recipes } from './collections/Recipes'
 import { Comments } from './collections/Comments'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
@@ -62,7 +67,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users, Comments],
+  collections: [Pages, Posts, Media, Categories, Ingredients, Recipes, Users, Comments],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [

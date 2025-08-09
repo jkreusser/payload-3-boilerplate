@@ -93,10 +93,12 @@ Eine öffentlich zugängliche Kochrezept‑Website auf Basis des bestehenden Pay
 ### Project Status Board
 
 - TODO: 1) Datenmodell anlegen (`Recipes`, `Ingredients`, `Categories`)
+  - IN PROGRESS: Collections `Ingredients`, `Recipes` angelegt; Revalidate‑Hook hinzugefügt; in `payload.config.ts` registriert; Types generiert
 - TODO: 2) Zutatenmodellierung (Menge/Einheit) finalisieren
 - TODO: 3) Zubereitungsschritte als Blöcke umsetzen
 - TODO: 4) Zeiten/Portionen/Nährwerte Felder hinzufügen
 - TODO: 5) Frontend Routen `/recipes`, `/recipes/[slug]`
+  - IN PROGRESS: Grundseiten für Rezepte (Liste & Detail) erstellt; einfache Ausgabe der RichText‑Steps
 - TODO: 6) Suche & Filter (Kategorie, Zutat)
 - TODO: 7) SEO & JSON‑LD (Recipe)
 - TODO: 8) Revalidate Hooks für `Recipes`
