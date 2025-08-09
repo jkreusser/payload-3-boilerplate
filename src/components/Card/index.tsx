@@ -8,6 +8,8 @@ import type { Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 
+const FAV_KEY = 'favorites:recipes'
+
 export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
 
 export const Card: React.FC<{
@@ -29,6 +31,16 @@ export const Card: React.FC<{
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
   const href = `/${relationTo}/${slug}`
 
+  const toggleFav = () => {
+    try {
+      const raw = localStorage.getItem(FAV_KEY)
+      const list = raw ? (JSON.parse(raw) as any[]) : []
+      const exists = list.find((x) => x?.slug === slug)
+      const next = exists ? list.filter((x) => x?.slug !== slug) : [...list, { slug, title }]
+      localStorage.setItem(FAV_KEY, JSON.stringify(next))
+    } catch {}
+  }
+
   return (
     <article
       className={cn(
@@ -42,6 +54,19 @@ export const Card: React.FC<{
         {metaImage && typeof metaImage !== 'string' && <Media resource={metaImage} size="33vw" />}
       </div>
       <div className="p-4">
+        <div className="flex items-center justify-between mb-2">
+          <div />
+          {slug && (
+            <button
+              type="button"
+              aria-label="Merken"
+              onClick={toggleFav}
+              className="text-sm opacity-80 hover:opacity-100"
+            >
+              ♥ Merken
+            </button>
+          )}
+        </div>
         {showCategories && hasCategories && (
           <div className="uppercase text-sm mb-4">
             {showCategories && hasCategories && (

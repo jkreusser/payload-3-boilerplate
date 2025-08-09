@@ -10,7 +10,6 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
-import { Ingredients } from './collections/Ingredients'
 import { Recipes } from './collections/Recipes'
 import { Comments } from './collections/Comments'
 import { Media } from './collections/Media'
@@ -67,7 +66,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Ingredients, Recipes, Users, Comments],
+  collections: [Pages, Posts, Media, Categories, Recipes, Users, Comments],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [

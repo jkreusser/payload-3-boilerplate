@@ -2,7 +2,6 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
-import { lexicalEditor, FixedToolbarFeature, InlineToolbarFeature, HeadingFeature, HorizontalRuleFeature, BlocksFeature } from '@payloadcms/richtext-lexical'
 import { slugField } from '@/fields/slug'
 import { revalidateRecipe } from './revalidateRecipe'
 
@@ -15,6 +14,34 @@ const UNIT_OPTIONS = [
   { label: 'Esslöffel', value: 'EL' },
   { label: 'Stück', value: 'stueck' },
 ]
+
+const CATEGORIES_OPTIONS = [
+  'Gutes mit Fleisch',
+  'Fisch & Meeresfrüchte',
+  'Bunte Gemüseküche',
+  'Für Veggies',
+  'Nudelgerichte',
+  'Reisgerichte',
+  'Suppenliebe',
+  'Leckere Salate',
+  'Süße Desserts',
+  'Asiatische Rezepte',
+  'Burger & Sandwiches',
+  'Gutes Frühstück',
+  'Schnelle Snacks',
+  'Saucen, Dips & Pesto',
+  'Eis Rezepte',
+  'Getränke',
+  'Schnelle Rezepte',
+  'Sommer Rezepte',
+  'Herbst Rezepte',
+  'Weihnachtsrezepte',
+].map((label) => ({ label, value: label }))
+
+const DIET_TYPE_OPTIONS = ['Vegetarisch', 'Vegan', 'Laktosefrei', 'Glutenfrei'].map((label) => ({
+  label,
+  value: label,
+}))
 
 export const Recipes: CollectionConfig<'recipes'> = {
   slug: 'recipes',
@@ -38,7 +65,15 @@ export const Recipes: CollectionConfig<'recipes'> = {
       required: true,
     },
     {
-      name: 'intro',
+      name: 'shortDescription',
+      type: 'textarea',
+    },
+    {
+      name: 'metaTitle',
+      type: 'text',
+    },
+    {
+      name: 'metaDescription',
       type: 'textarea',
     },
     {
@@ -53,9 +88,8 @@ export const Recipes: CollectionConfig<'recipes'> = {
       required: true,
       fields: [
         {
-          name: 'ingredient',
-          type: 'relationship',
-          relationTo: 'ingredients',
+          name: 'name',
+          type: 'text',
           required: true,
         },
         {
@@ -82,19 +116,8 @@ export const Recipes: CollectionConfig<'recipes'> = {
       type: 'array',
       fields: [
         {
-          name: 'content',
-          type: 'richText',
-          editor: lexicalEditor({
-            features: ({ rootFeatures }) => [
-              ...rootFeatures,
-              HeadingFeature({ enabledHeadingSizes: ['h3', 'h4'] }),
-              FixedToolbarFeature(),
-              InlineToolbarFeature(),
-              HorizontalRuleFeature(),
-              BlocksFeature({ blocks: [] }),
-            ],
-          }),
-          label: false,
+          name: 'text',
+          type: 'textarea',
           required: true,
         },
         {
@@ -125,9 +148,24 @@ export const Recipes: CollectionConfig<'recipes'> = {
     },
     {
       name: 'categories',
-      type: 'relationship',
-      relationTo: 'categories',
+      label: 'Kategorien',
+      type: 'select',
       hasMany: true,
+      options: CATEGORIES_OPTIONS,
+    },
+    {
+      name: 'dietType',
+      label: 'Ernährungsform',
+      type: 'select',
+      options: DIET_TYPE_OPTIONS,
+    },
+    {
+      name: 'tags',
+      label: 'Tags',
+      type: 'array',
+      fields: [
+        { name: 'value', type: 'text' },
+      ],
     },
     ...slugField(),
   ],

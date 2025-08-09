@@ -15,7 +15,6 @@ export interface Config {
     posts: Post;
     media: Media;
     categories: Category;
-    ingredients: Ingredient;
     recipes: Recipe;
     users: User;
     comments: Comment;
@@ -33,7 +32,6 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    ingredients: IngredientsSelect<false> | IngredientsSelect<true>;
     recipes: RecipesSelect<false> | RecipesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     comments: CommentsSelect<false> | CommentsSelect<true>;
@@ -620,25 +618,17 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ingredients".
- */
-export interface Ingredient {
-  id: number;
-  title: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "recipes".
  */
 export interface Recipe {
   id: number;
   title: string;
-  intro?: string | null;
+  shortDescription?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
   heroImage?: (number | null) | Media;
   ingredientsList: {
-    ingredient: number | Ingredient;
+    name: string;
     quantity: number;
     unit: 'g' | 'kg' | 'ml' | 'l' | 'TL' | 'EL' | 'stueck';
     note?: string | null;
@@ -646,21 +636,7 @@ export interface Recipe {
   }[];
   steps?:
     | {
-        content: {
-          root: {
-            type: string;
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        };
+        text: string;
         durationMinutes?: number | null;
         image?: (number | null) | Media;
         id?: string | null;
@@ -670,7 +646,37 @@ export interface Recipe {
   prepTime?: number | null;
   cookTime?: number | null;
   totalTime?: number | null;
-  categories?: (number | Category)[] | null;
+  categories?:
+    | (
+        | 'Gutes mit Fleisch'
+        | 'Fisch & Meeresfrüchte'
+        | 'Bunte Gemüseküche'
+        | 'Für Veggies'
+        | 'Nudelgerichte'
+        | 'Reisgerichte'
+        | 'Suppenliebe'
+        | 'Leckere Salate'
+        | 'Süße Desserts'
+        | 'Asiatische Rezepte'
+        | 'Burger & Sandwiches'
+        | 'Gutes Frühstück'
+        | 'Schnelle Snacks'
+        | 'Saucen, Dips & Pesto'
+        | 'Eis Rezepte'
+        | 'Getränke'
+        | 'Schnelle Rezepte'
+        | 'Sommer Rezepte'
+        | 'Herbst Rezepte'
+        | 'Weihnachtsrezepte'
+      )[]
+    | null;
+  dietType?: ('Vegetarisch' | 'Vegan' | 'Laktosefrei' | 'Glutenfrei') | null;
+  tags?:
+    | {
+        value?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   slug?: string | null;
   slugLock?: boolean | null;
   updatedAt: string;
@@ -784,10 +790,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'categories';
         value: number | Category;
-      } | null)
-    | ({
-        relationTo: 'ingredients';
-        value: number | Ingredient;
       } | null)
     | ({
         relationTo: 'recipes';
@@ -1112,25 +1114,18 @@ export interface CategoriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ingredients_select".
- */
-export interface IngredientsSelect<T extends boolean = true> {
-  title?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "recipes_select".
  */
 export interface RecipesSelect<T extends boolean = true> {
   title?: T;
-  intro?: T;
+  shortDescription?: T;
+  metaTitle?: T;
+  metaDescription?: T;
   heroImage?: T;
   ingredientsList?:
     | T
     | {
-        ingredient?: T;
+        name?: T;
         quantity?: T;
         unit?: T;
         note?: T;
@@ -1139,7 +1134,7 @@ export interface RecipesSelect<T extends boolean = true> {
   steps?:
     | T
     | {
-        content?: T;
+        text?: T;
         durationMinutes?: T;
         image?: T;
         id?: T;
@@ -1149,6 +1144,13 @@ export interface RecipesSelect<T extends boolean = true> {
   cookTime?: T;
   totalTime?: T;
   categories?: T;
+  dietType?: T;
+  tags?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
   slug?: T;
   slugLock?: T;
   updatedAt?: T;

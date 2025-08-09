@@ -19,7 +19,7 @@ export default async function Page() {
       slug: true,
       categories: true,
       heroImage: true,
-      intro: true,
+      shortDescription: true,
     },
   })
 
@@ -39,7 +39,9 @@ export default async function Page() {
                 <h3 className="text-lg font-semibold">
                   <Link href={`/recipes/${recipe.slug}`}>{recipe.title}</Link>
                 </h3>
-                {recipe.intro && <p className="mt-2 line-clamp-3">{recipe.intro}</p>}
+                {recipe.shortDescription && (
+                  <p className="mt-2 line-clamp-3">{recipe.shortDescription}</p>
+                )}
               </div>
             </div>
           ))}

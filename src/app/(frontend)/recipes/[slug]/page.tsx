@@ -3,6 +3,7 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
+import Link from 'next/link'
 
 type Args = {
   params: Promise<{ slug?: string }>
@@ -25,37 +26,52 @@ export default async function RecipePage({ params: paramsPromise }: Args) {
   const recipe = await queryRecipeBySlug({ slug })
   if (!recipe) return null
 
+  const payload = await getPayload({ config: configPromise })
+  const related = await payload.find({
+    collection: 'recipes',
+    limit: 6,
+    pagination: false,
+    where: {
+      and: [
+        { slug: { not_equals: slug } },
+        { categories: { contains: (recipe as any).categories?.[0] || '' } },
+      ],
+    },
+  })
+
   return (
     <article className="pt-16 pb-16">
       <div className="container">
         <h1 className="text-3xl font-semibold">{recipe.title}</h1>
-        {recipe.intro && <p className="mt-2 max-w-[48rem]">{recipe.intro}</p>}
+        {(recipe as any).shortDescription && (
+          <p className="mt-2 max-w-[48rem]">{(recipe as any).shortDescription}</p>
+        )}
+        <div className="text-sm opacity-75 mt-2">
+          {Array.isArray((recipe as any).categories) && (recipe as any).categories.length > 0 && (
+            <span>Kategorien: {(recipe as any).categories.join(', ')}</span>
+          )}
+          {(recipe as any).dietType && (
+            <span className="ml-4">Ernährungsform: {(recipe as any).dietType}</span>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
           <div className="lg:col-span-2">
             <h2 className="text-xl font-semibold mb-2">Zutaten</h2>
             <ul className="list-disc pl-6">
-              {(recipe.ingredientsList || []).map((row: any, idx: number) => {
-                const title = typeof row.ingredient === 'object' ? row.ingredient.title : ''
-                return (
-                  <li key={idx}>
-                    {row.quantity} {row.unit} {title}
-                    {row.note ? `, ${row.note}` : ''}
-                  </li>
-                )
-              })}
+              {((recipe as any).ingredientsList || []).map((row: any, idx: number) => (
+                <li key={idx}>
+                  {row.quantity} {row.unit} {row.name}
+                  {row.note ? `, ${row.note}` : ''}
+                </li>
+              ))}
             </ul>
 
             <h2 className="text-xl font-semibold mb-2 mt-8">Zubereitung</h2>
             <ol className="list-decimal pl-6 space-y-4">
-              {(recipe.steps || []).map((step: any, idx: number) => (
+              {(recipe as any).steps?.map((step: any, idx: number) => (
                 <li key={idx}>
-                  <div className="prose dark:prose-invert max-w-none">
-                    {/* content ist RichText JSON; einfache Ausgabe */}
-                    <pre className="whitespace-pre-wrap text-sm opacity-80">
-                      {JSON.stringify(step.content)}
-                    </pre>
-                  </div>
+                  <div className="max-w-[48rem] whitespace-pre-wrap">{step.text}</div>
                   {typeof step.durationMinutes === 'number' && (
                     <div className="text-sm mt-1 opacity-80">Dauer: {step.durationMinutes} min</div>
                   )}
@@ -92,6 +108,22 @@ export default async function RecipePage({ params: paramsPromise }: Args) {
             </div>
           </aside>
         </div>
+        {/* Sekundärnavigation */}
+        {related.docs?.length > 0 && (
+          <div className="mt-16">
+            <h3 className="text-xl font-semibold mb-4">Weitere Rezepte</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {related.docs.map((r: any, i: number) => (
+                <div key={i} className="border rounded p-4">
+                  <Link href={`/recipes/${r.slug}`} className="font-medium">{r.title}</Link>
+                  {r.shortDescription && (
+                    <p className="text-sm opacity-80 mt-2 line-clamp-3">{r.shortDescription}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </article>
   )
@@ -100,7 +132,10 @@ export default async function RecipePage({ params: paramsPromise }: Args) {
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { slug = '' } = await paramsPromise
   const recipe = await queryRecipeBySlug({ slug })
-  return { title: recipe?.title || 'Rezept' }
+  return {
+    title: (recipe as any)?.metaTitle || recipe?.title || 'Rezept',
+    description: (recipe as any)?.metaDescription,
+  }
 }
 
 const queryRecipeBySlug = cache(async ({ slug }: { slug: string }) => {
