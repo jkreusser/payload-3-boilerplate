@@ -5,7 +5,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "payload migrate && cross-env NODE_OPTIONS=--no-deprecation next build",
+    "postinstall": "pnpm rebuild sharp esbuild",
+    "build": "payload migrate && payload generate:importmap && cross-env NODE_OPTIONS=--no-deprecation next build",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
@@ -76,7 +77,11 @@
     "overrides": {
       "@types/react": "npm:types-react@19.0.0-rc.1",
       "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
-    }
+    },
+    "allowedBuiltDependencies": [
+      "sharp",
+      "esbuild"
+    ]
   },
   "overrides": {
     "@types/react": "npm:types-react@19.0.0-rc.1",
