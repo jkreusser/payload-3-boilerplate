@@ -9,11 +9,12 @@ import { Filters } from './Filters.client'
 
 export const dynamic = 'force-dynamic'
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: { q?: string; category?: string; diet?: string | string[]; max?: string }
-}) {
+type ListArgs = {
+  searchParams: Promise<{ q?: string; category?: string; diet?: string | string[]; max?: string }>
+}
+
+export default async function Page({ searchParams: searchParamsPromise }: ListArgs) {
+  const searchParams = await searchParamsPromise
   const payload = await getPayload({ config: configPromise })
 
   const where: any = {}

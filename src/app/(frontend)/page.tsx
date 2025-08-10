@@ -10,11 +10,12 @@ import FavoriteHeart from '@/components/FavoriteHeart/Heart.client'
 
 export const dynamic = 'force-dynamic'
 
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams?: { q?: string; category?: string; diet?: string | string[]; max?: string }
-}) {
+type HomeArgs = {
+  searchParams: Promise<{ q?: string; category?: string; diet?: string | string[]; max?: string }>
+}
+
+export default async function HomePage({ searchParams: searchParamsPromise }: HomeArgs) {
+  const searchParams = await searchParamsPromise
   const payload = await getPayload({ config: configPromise })
 
   const where: any = {}
