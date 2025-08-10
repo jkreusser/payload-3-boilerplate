@@ -4,12 +4,9 @@ import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 // - Für frische Datenbanken: führt alle bisherigen Migrationen in korrekter Reihenfolge aus
 // - Für bereits migrierte DBs: no-op (erkennt bestehendes Schema)
 
-import * as migration_20241125_222020_initial from './20241125_222020_initial'
-import * as migration_20241214_124128 from './20241214_124128'
-import * as migration_20250809_215300 from './20250809_215300'
-import * as migration_20250809_223517 from './20250809_223517'
-import * as migration_20250809_231537 from './20250809_231537'
-import * as migration_20250810_000001 from './20250810_000001'
+// Einzelmigrationen wurden entfernt; die Baseline enthält den finalen Stand inline via bestehender DB-Erkennung.
+// Neue additive Migrationen bitte zusätzlich hier aufrufen, bis erneut gesquasht wird:
+import * as migration_20250810_101000_ingredient_sections from './20250810_101000_ingredient_sections'
 
 export async function up(args: MigrateUpArgs): Promise<void> {
   const { payload } = args
@@ -27,23 +24,15 @@ export async function up(args: MigrateUpArgs): Promise<void> {
     return
   }
 
-  // Frische DB: führe alle bisherigen Migrationen in Reihenfolge aus
-  await migration_20241125_222020_initial.up(args)
-  await migration_20241214_124128.up(args)
-  await migration_20250809_215300.up(args)
-  await migration_20250809_223517.up(args)
-  await migration_20250809_231537.up(args)
-  await migration_20250810_000001.up(args)
+  // Frische DB: Da die historischen Migrationen entfernt wurden, setzen wir auf die aktuelle DB-Struktur,
+  // die von Payload beim ersten Start erzeugt wird (Dev/Init). Zusätzliche additive Migrationen werden hier ausgeführt.
+  // Achtung: Für produktive frische DBs sollten wir eine vollständige Baseline migrieren, wenn Payload nicht selbst initial erstellt.
+  await migration_20250810_101000_ingredient_sections.up(args)
 }
 
 export async function down(args: MigrateDownArgs): Promise<void> {
   // Rückwärts wieder abbauen
-  await migration_20250810_000001.down(args)
-  await migration_20250809_231537.down(args)
-  await migration_20250809_223517.down(args)
-  await migration_20250809_215300.down(args)
-  await migration_20241214_124128.down(args)
-  await migration_20241125_222020_initial.down(args)
+  await migration_20250810_101000_ingredient_sections.down(args)
 }
 
 

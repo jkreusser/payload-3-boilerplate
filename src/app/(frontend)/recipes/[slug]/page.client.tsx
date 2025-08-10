@@ -45,6 +45,24 @@ export function IngredientsScaler({
   ingredients: any[]
 }) {
   const { scaled, setFactor } = useScaledIngredients(ingredients)
+  // Gruppiere anhand Abschnittszeilen (isSection=true), deren Name als Titel dient
+  const grouped = React.useMemo(() => {
+    const groups: Array<{ title?: string; items: any[] }> = []
+    let current: { title?: string; items: any[] } | null = null
+    for (const row of scaled) {
+      if (row?.isSection) {
+        current = { title: row.name, items: [] }
+        groups.push(current)
+      } else {
+        if (!current) {
+          current = { items: [] }
+          groups.push(current)
+        }
+        current.items.push(row)
+      }
+    }
+    return groups
+  }, [scaled])
   return (
     <div>
       <RecipeClient
@@ -53,14 +71,19 @@ export function IngredientsScaler({
         ingredients={ingredients}
         onFactor={setFactor}
       />
-      <ul className="list-disc pl-6">
-        {scaled.map((row: any, idx: number) => (
-          <li key={idx}>
-            {row.quantity} {row.unit} {row.name}
-            {row.note ? `, ${row.note}` : ''}
-          </li>
-        ))}
-      </ul>
+      {grouped.map((group, gi) => (
+        <div key={gi} className="mb-4">
+          {group.title && <div className="font-medium mt-4 mb-1">{group.title}</div>}
+          <ul className="list-disc pl-6">
+            {group.items.map((row: any, idx: number) => (
+              <li key={idx}>
+                {row.quantity} {row.unit} {row.name}
+                {row.note ? `, ${row.note}` : ''}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   )
 }

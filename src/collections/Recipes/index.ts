@@ -95,6 +95,12 @@ export const Recipes: CollectionConfig<'recipes'> = {
       required: true,
       fields: [
         {
+          name: 'isSection',
+          label: 'Bereich / Gruppe (dieser Eintrag ist ein Abschnittstitel)',
+          type: 'checkbox',
+          defaultValue: false,
+        },
+        {
           name: 'name',
           type: 'text',
           required: true,
@@ -104,16 +110,25 @@ export const Recipes: CollectionConfig<'recipes'> = {
           type: 'number',
           // optional, z.B. "1 Zwiebel" ohne exakte Menge
           min: 0,
+          admin: {
+            condition: (_, siblingData) => !siblingData?.isSection,
+          },
         },
         {
           name: 'unit',
           type: 'select',
           options: UNIT_OPTIONS,
           // optional, z.B. "1 Zwiebel" ohne Einheit
+          admin: {
+            condition: (_, siblingData) => !siblingData?.isSection,
+          },
         },
         {
           name: 'note',
           type: 'text',
+          admin: {
+            condition: (_, siblingData) => !siblingData?.isSection,
+          },
         },
       ],
     },

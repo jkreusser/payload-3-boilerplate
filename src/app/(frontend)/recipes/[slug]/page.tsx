@@ -4,6 +4,15 @@ import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 import Link from 'next/link'
+import {
+  ChefHat,
+  Clock,
+  Flame,
+  Hourglass,
+  Users as UsersIcon,
+  Utensils,
+  ListChecks,
+} from 'lucide-react'
 import { Media } from '@/components/Media'
 import { IngredientsScaler } from './page.client'
 
@@ -46,73 +55,122 @@ export default async function RecipePage({ params: paramsPromise }: Args) {
   return (
     <article className="pt-16 pb-16">
       <div className="container">
-        <h1 className="text-3xl font-semibold">{recipe.title}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">{recipe.title}</h1>
+
+        {(recipe as any).shortDescription && (
+          <p className="mt-4 text-base opacity-90 max-w-[48rem]">
+            {(recipe as any).shortDescription}
+          </p>
+        )}
+        <div className="text-sm opacity-80 mt-4 flex flex-wrap gap-2">
+          {Array.isArray((recipe as any).categories) && (recipe as any).categories.length > 0 && (
+            <div className="flex items-center gap-2">
+              <ChefHat className="h-4 w-4" />
+              <div className="flex flex-wrap gap-1">
+                {(recipe as any).categories.map((c: string, i: number) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs"
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {Array.isArray((recipe as any).dietType) && (recipe as any).dietType.length > 0 && (
+            <div className="flex items-center gap-2 ml-2">
+              <UsersIcon className="h-4 w-4" />
+              <div className="flex flex-wrap gap-1">
+                {(recipe as any).dietType.map((d: string, i: number) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs"
+                  >
+                    {d}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
         {recipe.heroImage && typeof recipe.heroImage !== 'string' && (
-          <div className="mt-6">
-            <Media resource={recipe.heroImage as any} size="80vw" />
+          <div className="mt-6 relative aspect-[4/3] rounded-lg overflow-hidden">
+            <Media resource={recipe.heroImage as any} fill imgClassName="object-cover" />
           </div>
         )}
-        {(recipe as any).shortDescription && (
-          <p className="mt-2 max-w-[48rem]">{(recipe as any).shortDescription}</p>
-        )}
-        <div className="text-sm opacity-75 mt-2">
-          {Array.isArray((recipe as any).categories) && (recipe as any).categories.length > 0 && (
-            <span>Kategorien: {(recipe as any).categories.join(', ')}</span>
+        {/* Stats */}
+        <div className="grid grid-cols-2 gap-4 mt-6">
+          {typeof recipe.prepTime === 'number' && (
+            <div className="flex items-center gap-3 rounded-lg border p-3">
+              <Hourglass className="h-5 w-5" />
+              <div>
+                <div className="text-xs opacity-70">Vorbereitung</div>
+                <div className="text-base font-medium">{recipe.prepTime} min</div>
+              </div>
+            </div>
           )}
-          {(recipe as any).dietType && (
-            <span className="ml-4">Ernährungsform: {(recipe as any).dietType}</span>
+          {typeof recipe.cookTime === 'number' && (
+            <div className="flex items-center gap-3 rounded-lg border p-3">
+              <Flame className="h-5 w-5" />
+              <div>
+                <div className="text-xs opacity-70">Kochen</div>
+                <div className="text-base font-medium">{recipe.cookTime} min</div>
+              </div>
+            </div>
+          )}
+          {typeof recipe.totalTime === 'number' && (
+            <div className="flex items-center gap-3 rounded-lg border p-3">
+              <Clock className="h-5 w-5" />
+              <div>
+                <div className="text-xs opacity-70">Gesamt</div>
+                <div className="text-base font-medium">{recipe.totalTime} min</div>
+              </div>
+            </div>
+          )}
+          {typeof recipe.servings === 'number' && (
+            <div className="flex items-center gap-3 rounded-lg border p-3">
+              <UsersIcon className="h-5 w-5" />
+              <div>
+                <div className="text-xs opacity-70">Portionen</div>
+                <div className="text-base font-medium">{recipe.servings}</div>
+              </div>
+            </div>
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-          <div className="lg:col-span-2">
-            <h2 className="text-xl font-semibold mb-2">Zutaten</h2>
+        <div className="mt-10">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <Utensils className="h-5 w-5" />
+              <h2 className="text-xl font-semibold">Zutaten</h2>
+            </div>
             <IngredientsScaler
               slug={slug}
               baseServings={(recipe as any).servings || 1}
               ingredients={(recipe as any).ingredientsList || []}
             />
 
-            <h2 className="text-xl font-semibold mb-2 mt-8">Zubereitung</h2>
-            <ol className="list-decimal pl-6 space-y-4">
+            <div className="flex items-center gap-2 mt-10 mb-3">
+              <ListChecks className="h-5 w-5" />
+              <h2 className="text-xl font-semibold">Zubereitung</h2>
+            </div>
+            <ol className="space-y-5">
               {(recipe as any).steps?.map((step: any, idx: number) => (
-                <li key={idx}>
+                <li key={idx} className="flex gap-3">
+                  <div className="mt-0.5 h-6 w-6 shrink-0 grid place-items-center rounded-full border text-xs font-medium">
+                    {idx + 1}
+                  </div>
                   <div className="max-w-[48rem] whitespace-pre-wrap">{step.text}</div>
                   {typeof step.durationMinutes === 'number' && (
-                    <div className="text-sm mt-1 opacity-80">Dauer: {step.durationMinutes} min</div>
+                    <div className="text-sm mt-1 opacity-80 flex items-center gap-1">
+                      <Clock className="h-4 w-4" /> Dauer: {step.durationMinutes} min
+                    </div>
                   )}
                 </li>
               ))}
             </ol>
           </div>
-          <aside>
-            <div className="grid grid-cols-2 gap-4">
-              {typeof recipe.prepTime === 'number' && (
-                <div>
-                  <div className="text-sm opacity-70">Vorbereitung</div>
-                  <div className="text-lg font-medium">{recipe.prepTime} min</div>
-                </div>
-              )}
-              {typeof recipe.cookTime === 'number' && (
-                <div>
-                  <div className="text-sm opacity-70">Kochen</div>
-                  <div className="text-lg font-medium">{recipe.cookTime} min</div>
-                </div>
-              )}
-              {typeof recipe.totalTime === 'number' && (
-                <div>
-                  <div className="text-sm opacity-70">Gesamt</div>
-                  <div className="text-lg font-medium">{recipe.totalTime} min</div>
-                </div>
-              )}
-              {typeof recipe.servings === 'number' && (
-                <div>
-                  <div className="text-sm opacity-70">Portionen</div>
-                  <div className="text-lg font-medium">{recipe.servings}</div>
-                </div>
-              )}
-            </div>
-          </aside>
         </div>
         {/* Sekundärnavigation */}
         {related.docs?.length > 0 && (
