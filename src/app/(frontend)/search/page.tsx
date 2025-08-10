@@ -1,6 +1,6 @@
 import type { Metadata } from 'next/types'
 
-import { CollectionArchive } from '@/components/CollectionArchive'
+import { RecipeCard } from '@/components/RecipeCard'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
@@ -71,7 +71,25 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
       </div>
 
       {posts.totalDocs > 0 ? (
-        <CollectionArchive posts={posts.docs as CardPostData[]} />
+        <div className="container">
+          <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-y-4 gap-x-4 lg:gap-y-8 lg:gap-x-8 xl:gap-x-8">
+            {posts.docs.map((doc: any, idx: number) => (
+              <div key={idx} className="col-span-4">
+                <RecipeCard
+                  slug={doc.slug || ''}
+                  title={doc.title}
+                  description={doc.meta?.description}
+                  image={doc.meta?.image}
+                  category={
+                    Array.isArray(doc.categories) && doc.categories.length > 0
+                      ? doc.categories[0]?.title
+                      : undefined
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       ) : (
         <div className="container">No results found.</div>
       )}

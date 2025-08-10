@@ -2,18 +2,38 @@ import type { Metadata } from 'next/types'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import Link from 'next/link'
+import { Media } from '@/components/Media'
+import { RecipeCard } from '@/components/RecipeCard'
+import { RECIPE_CATEGORIES, RECIPE_DIET_TYPES } from '@/collections/Recipes'
+import { Filters } from './Filters.client'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: { q?: string; category?: string; diet?: string | string[]; max?: string }
+}) {
   const payload = await getPayload({ config: configPromise })
+
+  const where: any = {}
+  if (searchParams?.q) {
+    where.or = [{ title: { like: searchParams.q } }, { shortDescription: { like: searchParams.q } }]
+  }
+  if (searchParams?.category) where.categories = { contains: searchParams.category }
+  if (searchParams?.diet) {
+    const diets = Array.isArray(searchParams.diet) ? searchParams.diet : [searchParams.diet]
+    where.dietType = { in: diets }
+  }
+  if (searchParams?.max) where.totalTime = { less_than_equal: Number(searchParams.max) }
 
   const recipes = await payload.find({
     collection: 'recipes',
     depth: 1,
     limit: 24,
     overrideAccess: false,
+    where,
     select: {
       title: true,
       slug: true,
@@ -25,24 +45,31 @@ export default async function Page() {
 
   return (
     <div className="pt-24 pb-24">
-      <div className="container mb-16">
+      <div className="container mb-6">
         <div className="prose dark:prose-invert max-w-none">
           <h1>Rezepte</h1>
         </div>
       </div>
 
+      <Filters categories={RECIPE_CATEGORIES} dietTypes={RECIPE_DIET_TYPES} />
+
       <div className="container">
         <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-y-4 gap-x-4 lg:gap-y-8 lg:gap-x-8 xl:gap-x-8">
           {recipes.docs.map((recipe, idx) => (
             <div key={idx} className="col-span-4">
-              <div className="border border-border rounded-lg overflow-hidden bg-card p-4">
-                <h3 className="text-lg font-semibold">
-                  <Link href={`/recipes/${recipe.slug}`}>{recipe.title}</Link>
-                </h3>
-                {recipe.shortDescription && (
-                  <p className="mt-2 line-clamp-3">{recipe.shortDescription}</p>
-                )}
-              </div>
+              <RecipeCard
+                slug={recipe.slug || ''}
+                title={recipe.title}
+                description={recipe.shortDescription}
+                image={recipe.heroImage as any}
+                category={
+                  Array.isArray(recipe.categories) && recipe.categories.length > 0
+                    ? recipe.categories[0]
+                    : undefined
+                }
+                totalTime={undefined}
+                dietType={undefined}
+              />
             </div>
           ))}
         </div>

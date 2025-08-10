@@ -15,9 +15,25 @@ import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 
 import './globals.css'
+import 'lottie-web'
+import { defineElement } from '@lordicon/element'
 import { getServerSideURL } from '@/utilities/getURL'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Define once on the server-rendered layout; lord-icon works client-side when script runs
+  // Safe check to avoid redefinition
+  if (typeof window !== 'undefined') {
+    try {
+      // @ts-ignore
+      if (!window.__LORDICON_DEFINED__) {
+        // defineElement will autodetect lottie from global scope
+        // @ts-ignore
+        defineElement()
+        // @ts-ignore
+        window.__LORDICON_DEFINED__ = true
+      }
+    } catch {}
+  }
   const { isEnabled } = await draftMode()
 
   return (
@@ -26,6 +42,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        {/* Lordicon runtime for animated icons */}
+        <script defer src="https://cdn.lordicon.com/lordicon.js"></script>
       </head>
       <body>
         <Providers>

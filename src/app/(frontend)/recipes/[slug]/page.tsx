@@ -4,6 +4,8 @@ import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 import Link from 'next/link'
+import { Media } from '@/components/Media'
+import { IngredientsScaler } from './page.client'
 
 type Args = {
   params: Promise<{ slug?: string }>
@@ -39,10 +41,17 @@ export default async function RecipePage({ params: paramsPromise }: Args) {
     },
   })
 
+  // Client-Komponente rendert Portions-Steuerung + skalierte Zutaten
+
   return (
     <article className="pt-16 pb-16">
       <div className="container">
         <h1 className="text-3xl font-semibold">{recipe.title}</h1>
+        {recipe.heroImage && typeof recipe.heroImage !== 'string' && (
+          <div className="mt-6">
+            <Media resource={recipe.heroImage as any} size="80vw" />
+          </div>
+        )}
         {(recipe as any).shortDescription && (
           <p className="mt-2 max-w-[48rem]">{(recipe as any).shortDescription}</p>
         )}
@@ -58,14 +67,11 @@ export default async function RecipePage({ params: paramsPromise }: Args) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
           <div className="lg:col-span-2">
             <h2 className="text-xl font-semibold mb-2">Zutaten</h2>
-            <ul className="list-disc pl-6">
-              {((recipe as any).ingredientsList || []).map((row: any, idx: number) => (
-                <li key={idx}>
-                  {row.quantity} {row.unit} {row.name}
-                  {row.note ? `, ${row.note}` : ''}
-                </li>
-              ))}
-            </ul>
+            <IngredientsScaler
+              slug={slug}
+              baseServings={(recipe as any).servings || 1}
+              ingredients={(recipe as any).ingredientsList || []}
+            />
 
             <h2 className="text-xl font-semibold mb-2 mt-8">Zubereitung</h2>
             <ol className="list-decimal pl-6 space-y-4">
@@ -115,7 +121,9 @@ export default async function RecipePage({ params: paramsPromise }: Args) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {related.docs.map((r: any, i: number) => (
                 <div key={i} className="border rounded p-4">
-                  <Link href={`/recipes/${r.slug}`} className="font-medium">{r.title}</Link>
+                  <Link href={`/recipes/${r.slug}`} className="font-medium">
+                    {r.title}
+                  </Link>
                   {r.shortDescription && (
                     <p className="text-sm opacity-80 mt-2 line-clamp-3">{r.shortDescription}</p>
                   )}

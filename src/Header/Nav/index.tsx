@@ -6,7 +6,7 @@ import type { Header as HeaderType } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import Link from 'next/link'
-import { SearchIcon } from 'lucide-react'
+import { SearchIcon, Heart } from 'lucide-react'
 
 export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
   const navItems = header?.navItems || []
@@ -19,6 +19,10 @@ export const HeaderNav: React.FC<{ header: HeaderType }> = ({ header }) => {
       <Link href="/search">
         <span className="sr-only">Search</span>
         <SearchIcon className="w-5 text-primary" />
+      </Link>
+      <Link href="/favorites">
+        <span className="sr-only">Merkliste</span>
+        <Heart className="w-5 text-primary" />
       </Link>
     </nav>
   )

@@ -629,8 +629,8 @@ export interface Recipe {
   heroImage?: (number | null) | Media;
   ingredientsList: {
     name: string;
-    quantity: number;
-    unit: 'g' | 'kg' | 'ml' | 'l' | 'TL' | 'EL' | 'stueck';
+    quantity?: number | null;
+    unit?: ('g' | 'kg' | 'ml' | 'l' | 'TL' | 'EL' | 'stueck' | 'prise' | 'schuss' | 'dose') | null;
     note?: string | null;
     id?: string | null;
   }[];
@@ -670,7 +670,7 @@ export interface Recipe {
         | 'Weihnachtsrezepte'
       )[]
     | null;
-  dietType?: ('Vegetarisch' | 'Vegan' | 'Laktosefrei' | 'Glutenfrei') | null;
+  dietType?: ('Vegetarisch' | 'Vegan' | 'Laktosefrei' | 'Glutenfrei')[] | null;
   tags?:
     | {
         value?: string | null;
@@ -748,10 +748,15 @@ export interface Search {
   id: number;
   title?: string | null;
   priority?: number | null;
-  doc: {
-    relationTo: 'posts';
-    value: number | Post;
-  };
+  doc:
+    | {
+        relationTo: 'posts';
+        value: number | Post;
+      }
+    | {
+        relationTo: 'recipes';
+        value: number | Recipe;
+      };
   slug?: string | null;
   meta?: {
     title?: string | null;
@@ -763,6 +768,24 @@ export interface Search {
         relationTo?: string | null;
         id?: string | null;
         title?: string | null;
+      }[]
+    | null;
+  dietType?:
+    | {
+        value?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  tags?:
+    | {
+        value?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  ingredients?:
+    | {
+        value?: string | null;
+        id?: string | null;
       }[]
     | null;
   updatedAt: string;
@@ -1377,6 +1400,24 @@ export interface SearchSelect<T extends boolean = true> {
         relationTo?: T;
         id?: T;
         title?: T;
+      };
+  dietType?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
+  tags?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
+  ingredients?:
+    | T
+    | {
+        value?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;

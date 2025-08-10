@@ -3,19 +3,22 @@ import type { CollectionConfig } from 'payload'
 import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { slugField } from '@/fields/slug'
-import { revalidateRecipe } from './revalidateRecipe'
+import { revalidateRecipe } from '@/collections/Recipes/revalidateRecipe'
 
 const UNIT_OPTIONS = [
-  { label: 'Gramm', value: 'g' },
-  { label: 'Kilogramm', value: 'kg' },
-  { label: 'Milliliter', value: 'ml' },
-  { label: 'Liter', value: 'l' },
-  { label: 'Teelöffel', value: 'TL' },
-  { label: 'Esslöffel', value: 'EL' },
-  { label: 'Stück', value: 'stueck' },
+  { label: 'g', value: 'g' },
+  { label: 'kg', value: 'kg' },
+  { label: 'ml', value: 'ml' },
+  { label: 'l', value: 'l' },
+  { label: 'TL', value: 'TL' },
+  { label: 'EL', value: 'EL' },
+  { label: 'Stk', value: 'stueck' },
+  { label: 'Prise', value: 'prise' },
+  { label: 'Schuss', value: 'schuss' },
+  { label: 'Dose', value: 'dose' },
 ]
 
-const CATEGORIES_OPTIONS = [
+export const RECIPE_CATEGORIES: string[] = [
   'Gutes mit Fleisch',
   'Fisch & Meeresfrüchte',
   'Bunte Gemüseküche',
@@ -36,9 +39,13 @@ const CATEGORIES_OPTIONS = [
   'Sommer Rezepte',
   'Herbst Rezepte',
   'Weihnachtsrezepte',
-].map((label) => ({ label, value: label }))
+]
 
-const DIET_TYPE_OPTIONS = ['Vegetarisch', 'Vegan', 'Laktosefrei', 'Glutenfrei'].map((label) => ({
+const CATEGORIES_OPTIONS = RECIPE_CATEGORIES.map((label) => ({ label, value: label }))
+
+export const RECIPE_DIET_TYPES: string[] = ['Vegetarisch', 'Vegan', 'Laktosefrei', 'Glutenfrei']
+
+const DIET_TYPE_OPTIONS = RECIPE_DIET_TYPES.map((label) => ({
   label,
   value: label,
 }))
@@ -95,14 +102,14 @@ export const Recipes: CollectionConfig<'recipes'> = {
         {
           name: 'quantity',
           type: 'number',
-          required: true,
+          // optional, z.B. "1 Zwiebel" ohne exakte Menge
           min: 0,
         },
         {
           name: 'unit',
           type: 'select',
           options: UNIT_OPTIONS,
-          required: true,
+          // optional, z.B. "1 Zwiebel" ohne Einheit
         },
         {
           name: 'note',
@@ -157,6 +164,7 @@ export const Recipes: CollectionConfig<'recipes'> = {
       name: 'dietType',
       label: 'Ernährungsform',
       type: 'select',
+      hasMany: true,
       options: DIET_TYPE_OPTIONS,
     },
     {

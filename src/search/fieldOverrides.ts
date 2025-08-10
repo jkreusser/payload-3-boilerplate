@@ -58,4 +58,25 @@ export const searchFields: Field[] = [
       },
     ],
   },
+  {
+    label: 'Diet Types',
+    name: 'dietType',
+    type: 'array',
+    admin: { readOnly: true },
+    fields: [{ name: 'value', type: 'text' }],
+  },
+  {
+    label: 'Tags',
+    name: 'tags',
+    type: 'array',
+    admin: { readOnly: true },
+    fields: [{ name: 'value', type: 'text' }],
+  },
+  {
+    label: 'Ingredients',
+    name: 'ingredients',
+    type: 'array',
+    admin: { readOnly: true },
+    fields: [{ name: 'value', type: 'text' }],
+  },
 ]
