@@ -9,6 +9,7 @@ import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 import * as migration_20250810_101000_ingredient_sections from './20250810_101000_ingredient_sections'
 import * as migration_20250810_110000_search_rels_recipes from './20250810_110000_search_rels_recipes'
 import * as migration_20250810_111000_search_arrays from './20250810_111000_search_arrays'
+import * as migration_20250810_112000_search_array_ids_varchar from './20250810_112000_search_array_ids_varchar'
 
 export async function up(args: MigrateUpArgs): Promise<void> {
   const { payload } = args
@@ -32,6 +33,7 @@ export async function up(args: MigrateUpArgs): Promise<void> {
   await migration_20250810_101000_ingredient_sections.up(args)
   await migration_20250810_110000_search_rels_recipes.up(args)
   await migration_20250810_111000_search_arrays.up(args)
+  await migration_20250810_112000_search_array_ids_varchar.up(args)
 }
 
 export async function down(args: MigrateDownArgs): Promise<void> {
@@ -39,6 +41,7 @@ export async function down(args: MigrateDownArgs): Promise<void> {
   await migration_20250810_101000_ingredient_sections.down(args)
   await migration_20250810_110000_search_rels_recipes.down(args)
   await migration_20250810_111000_search_arrays.down(args)
+  await migration_20250810_112000_search_array_ids_varchar.down(args)
 }
 
 
