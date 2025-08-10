@@ -41,6 +41,7 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "**/*.d.ts",
     ".next/types/**/*.ts",
     "redirects.js",
     "next.config.js"
