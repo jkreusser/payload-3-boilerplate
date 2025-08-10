@@ -101,11 +101,6 @@ export const Recipes: CollectionConfig<'recipes'> = {
           defaultValue: false,
         },
         {
-          name: 'name',
-          type: 'text',
-          required: true,
-        },
-        {
           name: 'quantity',
           type: 'number',
           // optional, z.B. "1 Zwiebel" ohne exakte Menge
@@ -122,6 +117,11 @@ export const Recipes: CollectionConfig<'recipes'> = {
           admin: {
             condition: (_, siblingData) => !siblingData?.isSection,
           },
+        },
+        {
+          name: 'name',
+          type: 'text',
+          required: true,
         },
         {
           name: 'note',
