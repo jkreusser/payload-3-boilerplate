@@ -629,9 +629,9 @@ export interface Recipe {
   heroImage?: (number | null) | Media;
   ingredientsList: {
     isSection?: boolean | null;
-    name: string;
     quantity?: number | null;
     unit?: ('g' | 'kg' | 'ml' | 'l' | 'TL' | 'EL' | 'stueck' | 'prise' | 'schuss' | 'dose') | null;
+    name: string;
     note?: string | null;
     id?: string | null;
   }[];
@@ -1150,9 +1150,9 @@ export interface RecipesSelect<T extends boolean = true> {
     | T
     | {
         isSection?: T;
-        name?: T;
         quantity?: T;
         unit?: T;
+        name?: T;
         note?: T;
         id?: T;
       };
