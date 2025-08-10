@@ -8,6 +8,7 @@ import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 // Neue additive Migrationen bitte zusätzlich hier aufrufen, bis erneut gesquasht wird:
 import * as migration_20250810_101000_ingredient_sections from './20250810_101000_ingredient_sections'
 import * as migration_20250810_110000_search_rels_recipes from './20250810_110000_search_rels_recipes'
+import * as migration_20250810_111000_search_arrays from './20250810_111000_search_arrays'
 
 export async function up(args: MigrateUpArgs): Promise<void> {
   const { payload } = args
@@ -30,12 +31,14 @@ export async function up(args: MigrateUpArgs): Promise<void> {
   // Achtung: Für produktive frische DBs sollten wir eine vollständige Baseline migrieren, wenn Payload nicht selbst initial erstellt.
   await migration_20250810_101000_ingredient_sections.up(args)
   await migration_20250810_110000_search_rels_recipes.up(args)
+  await migration_20250810_111000_search_arrays.up(args)
 }
 
 export async function down(args: MigrateDownArgs): Promise<void> {
   // Rückwärts wieder abbauen
   await migration_20250810_101000_ingredient_sections.down(args)
   await migration_20250810_110000_search_rels_recipes.down(args)
+  await migration_20250810_111000_search_arrays.down(args)
 }
 
 
