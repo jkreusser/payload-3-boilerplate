@@ -11,18 +11,17 @@ type Props = React.ComponentPropsWithoutRef<'div'> & {
 
 export const LordIcon = React.forwardRef<any, Props>(
   ({ src, trigger = 'hover', colors, className, delay, ...rest }, ref) => {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <lord-icon
-        ref={ref as any}
-        src={src}
-        trigger={trigger}
-        colors={colors}
-        delay={delay as any}
-        class={className as any}
-        {...(rest as any)}
-      ></lord-icon>
-    )
+    // Verwende React.createElement, um den TS-Fehler für JSX-Custom-Elemente zu umgehen
+    return React.createElement('lord-icon' as any, {
+      ref: ref as any,
+      src,
+      trigger,
+      colors,
+      delay: delay as any,
+      class: className as any,
+      className: className as any,
+      ...(rest as any),
+    })
   },
 )
 LordIcon.displayName = 'LordIcon'
