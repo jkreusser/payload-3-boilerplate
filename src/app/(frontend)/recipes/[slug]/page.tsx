@@ -162,11 +162,7 @@ export default async function RecipePage({ params: paramsPromise }: Args) {
                     {idx + 1}
                   </div>
                   <div className="max-w-[48rem] whitespace-pre-wrap">{step.text}</div>
-                  {typeof step.durationMinutes === 'number' && (
-                    <div className="text-sm mt-1 opacity-80 flex items-center gap-1">
-                      <Clock className="h-4 w-4" /> {step.durationMinutes} min
-                    </div>
-                  )}
+                  {/* Dauer entfernt */}
                 </li>
               ))}
             </ol>

@@ -143,11 +143,6 @@ export const Recipes: CollectionConfig<'recipes'> = {
           required: true,
         },
         {
-          name: 'durationMinutes',
-          type: 'number',
-          min: 0,
-        },
-        {
           name: 'image',
           type: 'upload',
           relationTo: 'media',
