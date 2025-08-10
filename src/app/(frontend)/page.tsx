@@ -8,8 +8,7 @@ import { Media } from '@/components/Media'
 import { RecipeCard } from '@/components/RecipeCard'
 import FavoriteHeart from '@/components/FavoriteHeart/Heart.client'
 
-export const dynamic = 'force-static'
-export const revalidate = 600
+export const dynamic = 'force-dynamic'
 
 export default async function HomePage({
   searchParams,
@@ -52,7 +51,12 @@ export default async function HomePage({
         <p className="opacity-80">Suche und filtere nach Rezepten</p>
       </div>
 
-      <Filters categories={RECIPE_CATEGORIES} dietTypes={RECIPE_DIET_TYPES} multiDiet={false} />
+      <Filters
+        categories={RECIPE_CATEGORIES}
+        dietTypes={RECIPE_DIET_TYPES}
+        multiDiet={false}
+        basePath="/"
+      />
 
       <div className="container">
         <div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 gap-y-4 gap-x-4 lg:gap-y-8 lg:gap-x-8 xl:gap-x-8">

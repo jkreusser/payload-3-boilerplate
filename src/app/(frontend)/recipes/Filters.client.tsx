@@ -6,10 +6,12 @@ export function Filters({
   categories,
   dietTypes,
   multiDiet = true,
+  basePath = '/recipes',
 }: {
   categories: string[]
   dietTypes: string[]
   multiDiet?: boolean
+  basePath?: string
 }) {
   const router = useRouter()
   const sp = useSearchParams()
@@ -26,7 +28,7 @@ export function Filters({
     if (cat) p.set('category', cat)
     if (ds && ds.length) ds.forEach((d) => p.append('diet', d))
     if (mx) p.set('max', mx)
-    router.push(`/recipes?${p.toString()}`)
+    router.push(`${basePath}?${p.toString()}`)
   }
 
   return (

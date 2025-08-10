@@ -38,14 +38,14 @@ export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "ingredients" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "recipes_rels" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "_recipes_v_rels" DISABLE ROW LEVEL SECURITY;
-  DROP TABLE "ingredients" CASCADE;
-  DROP TABLE "recipes_rels" CASCADE;
-  DROP TABLE "_recipes_v_rels" CASCADE;
-  ALTER TABLE "recipes_ingredients_list" DROP CONSTRAINT "recipes_ingredients_list_ingredient_id_ingredients_id_fk";
-  
-  ALTER TABLE "_recipes_v_version_ingredients_list" DROP CONSTRAINT "_recipes_v_version_ingredients_list_ingredient_id_ingredients_id_fk";
-  
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_ingredients_fk";
+  -- Falls vorhanden: Constraints zuerst entfernen (bei frischer DB evtl. bereits entfernt durch CASCADE)
+  ALTER TABLE "recipes_ingredients_list" DROP CONSTRAINT IF EXISTS "recipes_ingredients_list_ingredient_id_ingredients_id_fk";
+  ALTER TABLE "_recipes_v_version_ingredients_list" DROP CONSTRAINT IF EXISTS "_recipes_v_version_ingredients_list_ingredient_id_ingredients_id_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_ingredients_fk";
+  -- Tabellen entfernen (falls vorhanden)
+  DROP TABLE IF EXISTS "ingredients" CASCADE;
+  DROP TABLE IF EXISTS "recipes_rels" CASCADE;
+  DROP TABLE IF EXISTS "_recipes_v_rels" CASCADE;
   
   DROP INDEX IF EXISTS "recipes_ingredients_list_ingredient_idx";
   DROP INDEX IF EXISTS "_recipes_v_version_ingredients_list_ingredient_idx";
