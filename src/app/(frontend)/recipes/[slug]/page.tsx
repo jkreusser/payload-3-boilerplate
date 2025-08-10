@@ -114,7 +114,7 @@ export default async function RecipePage({ params: paramsPromise }: Args) {
             <div className="flex items-center gap-3 rounded-lg border p-3">
               <Flame className="h-5 w-5" />
               <div>
-                    <div className="text-xs opacity-70">Zubereitung</div>
+                <div className="text-xs opacity-70">Zubereitung</div>
                 <div className="text-base font-medium">{recipe.cookTime} min</div>
               </div>
             </div>

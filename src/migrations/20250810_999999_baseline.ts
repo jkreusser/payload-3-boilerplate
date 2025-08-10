@@ -11,6 +11,7 @@ import * as migration_20250810_110000_search_rels_recipes from './20250810_11000
 import * as migration_20250810_111000_search_arrays from './20250810_111000_search_arrays'
 import * as migration_20250810_112000_search_array_ids_varchar from './20250810_112000_search_array_ids_varchar'
 import * as migration_20250810_113000_remove_step_duration from './20250810_113000_remove_step_duration'
+import * as migration_20250810_120000_units_add_values from './20250810_120000_units_add_values'
 
 export async function up(args: MigrateUpArgs): Promise<void> {
   const { payload } = args
@@ -36,6 +37,7 @@ export async function up(args: MigrateUpArgs): Promise<void> {
   await migration_20250810_111000_search_arrays.up(args)
   await migration_20250810_112000_search_array_ids_varchar.up(args)
   await migration_20250810_113000_remove_step_duration.up(args)
+  await migration_20250810_120000_units_add_values.up(args)
 }
 
 export async function down(args: MigrateDownArgs): Promise<void> {
@@ -45,6 +47,7 @@ export async function down(args: MigrateDownArgs): Promise<void> {
   await migration_20250810_111000_search_arrays.down(args)
   await migration_20250810_112000_search_array_ids_varchar.down(args)
   await migration_20250810_113000_remove_step_duration.down(args)
+  await migration_20250810_120000_units_add_values.down(args)
 }
 
 
